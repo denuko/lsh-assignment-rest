@@ -1,12 +1,14 @@
 package lsh.assignment.rest.web;
 
-import lsh.assignment.rest.dao.model.Vehicle;
 import lsh.assignment.rest.service.VehicleService;
 import lsh.assignment.rest.web.dto.VehicleDto;
+import lsh.assignment.rest.web.validator.VehicleValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -14,13 +16,20 @@ import java.util.List;
 public class VehicleController {
 
     private final VehicleService service;
+    private final VehicleValidator validator;
 
-    public VehicleController(VehicleService service) {
+    public VehicleController(VehicleService service, VehicleValidator validator) {
+        this.validator = validator;
         this.service = service;
     }
 
     @PostMapping("post")
-    public ResponseEntity<VehicleDto> postVehicle(@RequestBody VehicleDto vehicleDto) {
+    public ResponseEntity postVehicle(@Valid @RequestBody VehicleDto vehicleDto, BindingResult result) {
+        validator.validate(vehicleDto, result);
+
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(result.getAllErrors());
+        }
 
         return ResponseEntity.
                 status(HttpStatus.CREATED)
@@ -34,7 +43,12 @@ public class VehicleController {
     }
 
     @PutMapping("put/{id}")
-    public ResponseEntity<VehicleDto> putVehicle(@RequestBody VehicleDto vehicleDto, @PathVariable Long id) {
+    public ResponseEntity putVehicle(@Valid @RequestBody VehicleDto vehicleDto, @PathVariable Long id, BindingResult result) {
+        validator.validate(vehicleDto, result);
+
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(result.getAllErrors());
+        }
 
         return ResponseEntity
                 .status(HttpStatus.OK)
