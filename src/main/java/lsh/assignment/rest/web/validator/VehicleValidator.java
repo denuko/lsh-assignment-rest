@@ -18,39 +18,46 @@ public class VehicleValidator {
         BigDecimal wheelPressureMin = new BigDecimal(Integer.MAX_VALUE);
         BigDecimal wheelPressureMax = BigDecimal.ZERO;
 
-//        - license plate should be 6 characters (letters and digits only), only greek alphabet is valid
-        if (!licensePlate.matches("^[α-ωΑ-Ω0-9]{6}$")) {
-            result.rejectValue("licensePlate", ErrorMessage.INVALID_LICENSE_PLATE.getMessage());
-        }
-
-//        - lowercase characters in license plate should be transformed to upper case
-        dto.setLicensePlate(licensePlate.toUpperCase());
-
-//        - the vehicle should have 4 or 6 wheels,
-        if (!(wheelList.size() == 4 || wheelList.size() == 6)) {
-            result.rejectValue("wheelList", ErrorMessage.INVALID_WHEELLIST_SIZE.getMessage());
-        }
-
-        for (WheelDto wheelDto : wheelList) {
-            if (wheelDto.getPressure().compareTo(wheelPressureMax) > 0) {
-                wheelPressureMax = wheelDto.getPressure();
+        if (licensePlate != null) {
+            if (!licensePlate.matches("^[α-ωΑ-Ω0-9]{6}$")) {
+                result.rejectValue("licensePlate", ErrorMessage.INVALID_LICENSE_PLATE.getMessage());
             }
 
-            if (wheelDto.getPressure().compareTo(wheelPressureMin) < 0) {
-                wheelPressureMin = wheelDto.getPressure();
+            dto.setLicensePlate(licensePlate.toUpperCase());
+        }
+
+        if (wheelList != null) {
+            if (!(wheelList.size() == 4 || wheelList.size() == 6)) {
+                result.rejectValue("wheelList", ErrorMessage.INVALID_WHEELLIST_SIZE.getMessage());
+            }
+
+            for (WheelDto wheelDto : wheelList) {
+                if (wheelDto.getPressure() != null) {
+                    if (wheelDto.getPressure().compareTo(wheelPressureMax) > 0) {
+                        wheelPressureMax = wheelDto.getPressure();
+                    }
+
+                    if (wheelDto.getPressure().compareTo(wheelPressureMin) < 0) {
+                        wheelPressureMin = wheelDto.getPressure();
+                    }
+                }
+            }
+
+            if (wheelPressureMax.subtract(wheelPressureMin).compareTo(new BigDecimal("0.5")) > 0) {
+                result.rejectValue("wheelList", ErrorMessage.INVALID_WHEEL_PRESSURE.getMessage());
             }
         }
 
-        if (wheelPressureMax.subtract(wheelPressureMin).compareTo(new BigDecimal("0.5")) > 0) {
-            result.rejectValue("wheelList", ErrorMessage.INVALID_WHEEL_PRESSURE.getMessage());
+        if (dto.getPostalCode() != null) {
+            if (!dto.getPostalCode().matches("^[0-9]{5}$")) {
+                result.rejectValue("postalCode", ErrorMessage.INVALID_POSTAL_CODE.getMessage());
+            }
         }
 
-        if (!dto.getPostalCode().matches("^[0-9]{5}$")) {
-            result.rejectValue("licensePlate", ErrorMessage.INVALID_LICENSE_PLATE.getMessage());
-        }
-
-        if (!dto.getVehicleName().matches("^.{3,33}$")) {
-            result.rejectValue("licensePlate", ErrorMessage.INVALID_VEHICLE_NAME.getMessage());
+        if (dto.getVehicleName() != null) {
+            if (!dto.getVehicleName().matches("^.{3,33}$")) {
+                result.rejectValue("vehicleName", ErrorMessage.INVALID_VEHICLE_NAME.getMessage());
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 package lsh.assignment.rest.web.dto;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
@@ -11,6 +12,7 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class WheelDto implements Serializable {
     private Long id;
 
@@ -22,4 +24,10 @@ public class WheelDto implements Serializable {
 
     @NotNull @Positive
     private BigDecimal pressure;
+
+    public WheelDto(@NotNull @Positive Long size, @NotBlank String manufacturer, @NotNull @Positive BigDecimal pressure) {
+        this.size = size;
+        this.manufacturer = manufacturer;
+        this.pressure = pressure;
+    }
 }

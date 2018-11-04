@@ -3,6 +3,7 @@ package lsh.assignment.rest.web.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -22,5 +23,5 @@ public class VehicleDto implements Serializable {
     private String vehicleName;
 
     @NotNull
-    private List<WheelDto> wheelList;
+    private List<@Valid WheelDto> wheelList;
 }
