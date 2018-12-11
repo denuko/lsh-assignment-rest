@@ -23,7 +23,7 @@ public class VehicleController {
         this.service = service;
     }
 
-    @PostMapping("post")
+    @PostMapping("")
     public ResponseEntity postVehicle(@Valid @RequestBody VehicleDto vehicleDto, BindingResult result) {
         validator.validate(vehicleDto, result);
 
@@ -36,13 +36,13 @@ public class VehicleController {
                 .body(service.createVehicle(vehicleDto));
     }
 
-    @GetMapping("get/{licensePlate}")
+    @GetMapping("{licensePlate}")
     public List<VehicleDto> getVehiclesByName(@PathVariable String licensePlate) {
 
         return service.findVehicleByLicensePlate(licensePlate);
     }
 
-    @PutMapping("put/{id}")
+    @PutMapping("{id}")
     public ResponseEntity putVehicle(@Valid @RequestBody VehicleDto vehicleDto, @PathVariable Long id, BindingResult result) {
         validator.validate(vehicleDto, result);
 
@@ -55,7 +55,7 @@ public class VehicleController {
                 .body(service.updateVehicle(vehicleDto, id));
     }
 
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity deleteVehicle(@PathVariable Long id) {
         service.deleteVehicle(id);
 
@@ -64,7 +64,7 @@ public class VehicleController {
                 .body("Vehicle id " + id + " deleted successfully.");
     }
 
-    @GetMapping("get")
+    @GetMapping("")
     public List<VehicleDto> getVehicles() {
 
         return service.findVehicles();
